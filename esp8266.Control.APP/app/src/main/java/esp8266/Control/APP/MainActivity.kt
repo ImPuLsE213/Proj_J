@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
         sendButton.setOnClickListener{
             outputText.text = textToSendTextBox.text
         }
-        
+
 
         // Write a message to the database
         val database = FirebaseDatabase.getInstance()

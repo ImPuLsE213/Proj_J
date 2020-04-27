@@ -1,45 +1,61 @@
+#include <ESP8266WiFi.h>
 
--- THIS CODE SHOULD NOT ACTUALLY WORK
--- SERVES ONLY AS AN EXAMPLE OF FUNCTION USAGE
+#include <FirebaseArduino.h>
 
--- ON ERROR FUNCTIONS RETURN nil, status code, error message
--- ON SUCCESS FUNCTIONS RETURN the body
---   (you can choose between JSON and TABLE format with the decode flag)
+#define WIFI_SSID "SSID"
+#define WIFI_PASSWORD "WIFI PASSWORD"
+#define FIREBASE_HOST "?????????????.firebaseio.com"
+#define FIREBASE_AUTH "AUTH KEY"
 
-local firebase = require 'firebase'
+int LED1 = 4;
 
-local firebase_pid = "example"
-local path = "store"
+void setup()
+{
+Serial.begin(115200);
 
--- this does a GET request to https://example.firebaseio.com/store.json
-local jsondata = firebase.get(firebase_pid,path)
+pinMode(LED1, OUTPUT);
 
--- the data is returned in JSON format by default
-print(jsondata)
+  delay(2000);
+  Serial.println('\n');
 
--- if you set the decode flag to true (argument #3)
--- then you get a Lua table
-local tabledata = firebase.get(firebase_pid,path,true)
+  wifiConnect();
 
--- if you have some data which is protected from reading without a TOKEN
--- then you need to pass the user TOKEN as an additional argument
-local protected_path = "protected"
-local token = "TOKEN_HERE"
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
 
--- this does a GET request to https://example.firebaseio.com/protected.json?access_token=TOKEN_HERE
-local protecteddata = firebase.get(firebase_pid,protected_path,false,token)
-
--- some new data to be uploaded to Firebase DB
-local new_data = {
-  a=5,
-  b="abc"
+  delay(10);
 }
 
--- to post some data do a POST request
-firebase.post(firebase_pid,"some/path/here",new_data,true,token)
+void loop()
+{
 
--- new_data is a lua table so the encode flag has to be true
--- for it to get encoded into JSON
+Serial.print(Firebase.getString("LED1") + "\n");
 
--- lets say that writing to the database is protected at the path some/path/here
--- that is why there is an user TOKEN as the last argument to the function
+analogWrite(LED1, Firebase.getString("LED1").toInt());
+delay(10);
+
+if(WiFi.status() != WL_CONNECTED)
+{
+  wifiConnect();
+}
+delay(10);
+
+}
+
+void wifiConnect()
+{
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);             // Connect to the network
+  Serial.print("Connecting to ");
+  Serial.print(WIFI_SSID); Serial.println(" ...");
+
+  int teller = 0;
+  while (WiFi.status() != WL_CONNECTED)
+  {                                       // Wait for the Wi-Fi to connect
+    delay(1000);
+    Serial.print(++teller); Serial.print(' ');
+  }
+
+  Serial.println('\n');
+  Serial.println("Connection established!");
+  Serial.print("IP address:\t");
+  Serial.println(WiFi.localIP());         // Send the IP address of the ESP8266 to the computer
+}
