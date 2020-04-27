@@ -1,4 +1,4 @@
-package com.example.j
+package com.example.esp8266ControlAPP
 
 import android.app.Activity
 import android.os.Bundle
@@ -13,6 +13,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        title = "esp8266ControlAPP";
+
 
         val textToSendTextBox = findViewById<EditText>(R.id.textToSendTextBox)
         val outputText = findViewById<TextView>(R.id.outputText)
