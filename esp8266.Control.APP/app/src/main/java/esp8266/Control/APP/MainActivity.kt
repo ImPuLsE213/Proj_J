@@ -25,18 +25,13 @@ class MainActivity : AppCompatActivity() {
         sendButton.setOnClickListener{
             outputText.text = textToSendTextBox.text
         }
-
-
-
-
-        // Write a message to the database
+        
 
         // Write a message to the database
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference("message")
 
         myRef.setValue(true)
-
 
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -50,7 +45,5 @@ class MainActivity : AppCompatActivity() {
                 // Failed to read value
             }
         })
-
-
     }
 }
